@@ -1,0 +1,27 @@
+[Unit]
+Description=phpmyadmin_1
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+ExecStartPre=-/usr/bin/docker pull prom/prometheus
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user=1101 \
+  --publish=9090:9090 \
+  --volume=/etc/prometheus/:/etc/prometheus/ \
+  --volume=/data/prometheus/:/prometheus/ \
+  --name=prometheus_1 \
+  prom/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/prometheus \
+  --storage.tsdb.retention.time=1d
+ExecStop=/usr/bin/docker stop prometheus_1
+ 
+[Install]
+WantedBy=multi-user.target

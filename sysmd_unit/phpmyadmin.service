@@ -1,0 +1,26 @@
+[Unit]
+Description=phpmyadmin_1
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+ExecStartPre=-/usr/bin/docker pull phpmyadmin
+
+ExecStart=/usr/bin/docker run \
+  --name phpmyadmin_1 \
+  --rm \
+  -p 8000:80 \
+  -e PMA_ARBITRARY=1 \
+  phpmyadmin
+
+TimeoutStartSec=600
+
+
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target
