@@ -1,19 +1,19 @@
-# запустить обновление пакетного менеджера yum
-yum update 
-# запустить обновление пакетного менеджера yum
-subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
-# dnf - аналог yum, запускает скачивание и установку EPEL (Extra Packeges for Enterprise Linux) это понадобится позже
-dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm 
-# добавить пользователя
-adduser qwe  
-# задать пароль пользователю
-passwd qwe 
-# добавить пользователя в группу администраторв, где '-a' добавления пользователя в дополнительную группу из параметра '-G', не заменяя текущюю группу
-usermod -a -G wheel qwe
+# Добавляем пользователя
+sudo adduser qwe  
+# Задаем пароль пользователю
+sudo passwd qwe 
+# Добавляем пользователя в группу администраторов, где '-a' добавления пользователя в дополнительную группу из параметра '-G', не заменяя текущюю группу
+sudo usermod -a -G wheel qwe
 # редактируем параметры sudo через редактор nano
-EDITOR=nano visudo 
+sudo EDITOR=nano visudo 
 # добавляем в файл конфигурации строку
 user ALL=(ALL) NOPASSWD: ALL 
+# запустить обновление пакетного менеджера yum
+sudo yum update 
+# запустить обновление пакетного менеджера yum
+sudo subscription-manager repos --enable codeready-builder-for-rhel-9-$(arch)-rpms
+# dnf - аналог yum, запускает скачивание и установку EPEL (Extra Packeges for Enterprise Linux) это понадобится позже
+dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm 
 # устанавливаем доп инструментарий к yum
 sudo yum install -y yum-utils 
 # добавляем репозиторий для скачивания docker
@@ -25,8 +25,6 @@ sudo systemctl start docker
 # проверяем работу
 # Этой командой мы скачаем и запустим тестовый контейнер.  
 sudo docker run hello-world
-# настраиваем запуск и использование docker без sudo, добавляем группу с именем docker
-sudo groupadd docker
 # добавляем нашего созданного пользователя в группу
 sudo gpasswd -a $USER docker
 # проверяем работу docker без sudo. Так же, включим службу docker, для автоматического запуска.
@@ -37,7 +35,7 @@ sudo yum install git
 # Создаем SSH ключ для подключения к нашему репозиторию
 ssh-keygen -t ed25519 -C "MAIL@gmail.com"
 # Выводим на экран и добавляем в git свой публичный ключ
-nano /home/qwe/.ssh/id_ed25519.pub
+cat /home/qwe/.ssh/id_ed25519.pub
 (вставить ключ в https://github.com/settings/keys "New SSH key")
 # Включаем Ssh-agent
 eval `ssh-agent -s`
@@ -46,7 +44,7 @@ ssh-add ~/.ssh/id_ed25519
 # Клонируем свой репозиторий
 git clone git@github.com:crazysven13/frst_prj.git
 # Копируем наши systemd unit'ы в папку systemd
-sudo cp -r ~/frst_prj/systemd_unit/ /etc/systemd/system/
+sudo cp -r ~/frst_prj/systemd_unit/* /etc/systemd/system/
 # Сообщаем systemd о том что появились новые службы
 sudo systemctl daemon-reload
 
@@ -60,7 +58,7 @@ sudo systemctl start mysql
 # Создаем каталог конфигурации mysql exporter
 sudo mkdir /etc/mysql_exporter
 # Копируем файл конфигурации экспортера (для хранения кредов)
-sudo cp -r ~/frst_prj/mysql_exporter /etc/mysql_exporter
+sudo cp ~/frst_prj/mysql_exporter/.my.cnf /etc/mysql_exporter/.my.cnf
 # Запускаем экспортер метрик для mysql
 sudo systemctl start mysql_exporter
 
@@ -90,7 +88,7 @@ sudo mkdir -p /data/prometheus
 # Выдаем пользователю prometheus права на каталоги. Команда chown выполняется с опцией «-R», рекурсивно.
 sudo chown -R prometheus /etc/prometheus /data/prometheus
 # Копируем конфигурационный файл 
-sudo -r cp ~/frst_prj/prometheus /etc/
+sudo cp -r ~/frst_prj/prometheus /etc/
 # Редактирование конфигурационного файла
 # !!Вместо HOST_IP_ADDRESS указать текущий адрес хоста!!
 sudo nano /etc/prometheus/prometheus.yml
@@ -101,18 +99,20 @@ sudo systemctl start prometheus
 # Создание пользователя и директорий
 sudo useradd -M -u 1102 -s /bin/false grafana
 # Создание директории, которые указаны в пути «-p». Это каталог декларативного описания источников данных
-sudo mkdir -p /etc/grafana/provisioning/datasources 
+sudo mkdir -p /etc/grafana/provisioning/datasources
 # Создание каталога декларативного описания дашбордов
-sudo mkdir /etc/grafana/provisioning/dashboards 
+sudo mkdir /etc/grafana/provisioning/dashboards
 # Создание каталога данных 
 sudo mkdir -p /data/grafana/dashboards 
 # Выдаем пользователю grafana права на каталоги. 
 # Команда chown выполняется с опцией «-R», рекурсивно.
 sudo chown -R grafana /etc/grafana/ /data/grafana
 # Копируем конфигурационные файлы grafana
-sudo cp ~/frst_prj/grafana /etc/
+sudo cp -r ~/frst_prj/grafana /etc/
 # Редактируем yml файл для описания источника данных
 # Указать в строке "url" адрес сервера
 sudo nano /etc/grafana/provisioning/datasources/main.yml
 # Копируем дашборды в каталог grafana
-sudo -r cp data /
+sudo cp -r ~/frst_prj/data /
+# Запускаем grafana
+sudo systemctl start grafana
