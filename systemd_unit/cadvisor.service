@@ -1,0 +1,24 @@
+[Unit]
+Description=cadvisor
+Requires=docker.service
+After=network.target docker.socket
+ 
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm cadvisor
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --publish=8080:8080 \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --privileged=true \
+  --name=cadvisor \
+  gcr.io/cadvisor/cadvisor:v0.44.0
+ 
+ExecStop=/usr/bin/docker stop -t 10 cadvisor
+ 
+[Install]
+WantedBy=multi-user.target

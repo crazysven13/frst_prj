@@ -1,0 +1,27 @@
+[Unit]
+Description=mysql_exporter_1
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+ExecStartPre=-/usr/bin/docker pull prom/mysqld-exporter
+
+ExecStart=/usr/bin/docker run \
+  --name mysql_exporter_1 \
+  --rm \
+  -p 9104:9104 \
+  --link=mysql_1:bdd  \
+  -v /etc/mysql_exporter:/cfg \
+  -e DATA_SOURCE_NAME="root:rootpassword@(bdd:3306)/tst_db" \
+  prom/mysqld-exporter --config.my-cnf=/cfg/.my.cnf
+
+TimeoutStartSec=600
+
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,5 @@
 [Unit]
-Description=node_exporter_1
+Description=phpmyadmin_1
 Documentation=123
 After=network.target docker.socket
 Requires=docker.socket
@@ -8,16 +8,16 @@ Requires=docker.socket
 RestartSec=100
 Restart=on-failure
 
-ExecStartPre=-/usr/bin/docker pull bitnami/node-exporter
+ExecStartPre=-/usr/bin/docker pull phpmyadmin
 
 ExecStart=/usr/bin/docker run \
-  --name node_exporter_1 \
+  --name phpmyadmin_1 \
   --rm \
-  -p 9100:9100 \
-  bitnami/node-exporter
+  -p 8000:80 \
+  -e PMA_ARBITRARY=1 \
+  phpmyadmin
 
 TimeoutStartSec=600
-
 
 KillMode=none
 
