@@ -1,8 +1,8 @@
 cluster.name: ess-seva
 discovery.seed_hosts: []
 node.name: node-1
-network.host: "localhost"
-transport.host: "localhost"
+network.host: <localhost>
+transport.host: <localhost>
 xpack.license.self_generated.type: trial
 xpack.security.enabled: false
 
