@@ -1,0 +1,28 @@
+[Unit]
+Description=elasticsearch
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestatSec=100
+Restart=on-failure
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user=1900 \
+  --net=host \
+  --memory=2g \
+  --memory-swap=2g \
+  --cpus="2" \
+  --volume=/data/elasticsearch/data:/usr/share/elasticsearch/data \
+  --volume=/data/elasticsearch/logs:/usr/share/elasticsearch/logs \
+  --volume=/data/elasticsearch/config:/usr/share/elasticsearch/config \
+  --env "ES_JAVA_OPTS=-Xms1024m -Xmx1024m" \
+  --env "ELASTIC_PASSWORD=123123" \
+  --env "ES_PATH_CONF=/usr/share/elasticsearch/config" \
+  --name elasticsearch_1 elasticsearch:8.12.1
+
+ExecStop=/usr/bin/docker stop elasticsearch_1
+
+[Install]
+WantedBy=multi-user.target

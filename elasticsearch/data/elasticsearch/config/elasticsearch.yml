@@ -1,0 +1,11 @@
+cluster.name: ess-seva
+discovery.seed_hosts: []
+node.name: node-1
+network.host: 192.168.1.190
+transport.host: 192.168.1.190
+xpack.license.self_generated.type: trial
+xpack.security.enabled: false
+
+path:
+  data: /usr/share/elasticsearch/data
+  logs: /usr/share/elasticsearch/logs

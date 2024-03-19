@@ -1,0 +1,25 @@
+[Unit]
+Description=logstash
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user=1902 \
+  --net=host \
+  --volume=/data/logstash/pipeline/:/usr/share/logstash/pipeline/ \
+  --volume=/data/logstash/config/:/usr/share/logstash/config/ \
+  --name=logstash_1 \
+  --env "LS_JAVA_OPTS=-Xms512m -Xmx512m" \
+  --env "discovery.type=single-node" \
+  logstash:7.10.1 \
+  --path.config=/usr/share/logstash/pipeline/pipelines.conf
+ExecStop=/usr/bin/docker stop elastic_1
+
+[Install]
+WantedBy=multi-user.target

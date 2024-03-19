@@ -7,4 +7,4 @@ datasources:
     orgId: 1
     basicAuth: false
     editable: false
-    url: http://192.168.68.107:9090
+    url: http://<hostname>:9090

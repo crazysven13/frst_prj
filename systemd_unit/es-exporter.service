@@ -1,0 +1,27 @@
+[Unit]
+Description=elasticsearch-exporter_1
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+
+ExecStart=/usr/bin/docker run \
+  --name elasticsearch-exporter_1 \
+  --rm \
+  -p=19200:19200 \
+  bitnami/elasticsearch-exporter \
+  --es.uri="http://elastic:123123@192.168.1.190:9200" \
+  --web.listen-address=:19200
+
+TimeoutStartSec=600
+
+ExecStop=/usr/bin/docker stop node-exporter_1
+
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target

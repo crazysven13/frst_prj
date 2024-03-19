@@ -1,0 +1,21 @@
+[Unit]
+Description=kibana
+Documentation=123
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+RestartSec=100
+Restart=on-failure
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user=1901 \
+  --publish=5601:5601 \
+  --volume=/data/kibana/config:/usr/share/kibana/config \
+  --name=kibana_1 \
+  kibana:8.12.1
+ExecStop=/usr/bin/docker stop kibana_1
+
+[Install]
+WantedBy=multi-user.target

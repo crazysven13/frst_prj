@@ -1,42 +1,33 @@
 global:
-# интервал опроса 
   scrape_interval: 15s
-# таймаут опроса
   scrape_timeout: 10s
-# проверка правил опроса
   evaluation_interval: 30s
 
-# конфигурация опроса
 scrape_configs:
-# имя job’ы (задание)
   - job_name: 'prometheus'
-# постоянные настройки, в нашем случае – адрес сервера.
     static_configs:
       - targets:
-        - HOST_IP_ADDRESS:9090
-
-# имя job’ы (задание)
+         - 192.168.1.190:9090
   - job_name: 'node'
-# постоянные настройки, в нашем случае – адрес сервера.
     static_configs:
       - targets:
-        - HOST_IP_ADDRESS:9100
-# имя job’ы (задание)
+         - 192.168.1.190:9100
   - job_name: 'mysql'
-# постоянные настройки, в нашем случае – адрес сервера.
     static_configs:
       - targets:
-          - HOST_IP_ADDRESS:3306
+         - 192.168.1.190:3306
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: HOST_IP_ADDRESS:9104
-# имя job’ы (задание)
+        replacement: 192.168.1.190:9104
   - job_name: 'cadvisor'
-# постоянные настройки, в нашем случае – адрес сервера.
     static_configs:
       - targets:
-          - HOST_IP_ADDRESS:8080
+         - 192.168.1.190:8080
+  - job_name: 'es-exporter'
+    static_configs:
+      - targets:
+         - 192.168.1.190:19200
