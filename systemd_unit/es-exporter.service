@@ -14,7 +14,7 @@ ExecStart=/usr/bin/docker run \
   --rm \
   -p=19200:19200 \
   bitnami/elasticsearch-exporter \
-  --es.uri="http://elastic:123123@192.168.1.190:9200" \
+  --es.uri="http://elastic:123123@<localhost>:9200" \
   --web.listen-address=:19200
 
 TimeoutStartSec=600
