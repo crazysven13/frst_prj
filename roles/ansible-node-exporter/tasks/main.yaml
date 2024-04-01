@@ -1,0 +1,13 @@
+- name: install node exporter
+  include: install.yaml
+  become: true
+  when: not nde_flush_all|bool
+  tags: 
+  - nde_install
+
+- name: uninstall node exporter
+  include: uninstall.yaml
+  become: true
+  when: nde_flush_all|bool
+  tags:
+  - nde_uninstall

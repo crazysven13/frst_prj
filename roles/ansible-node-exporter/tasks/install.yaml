@@ -1,0 +1,7 @@
+- name: copy service config
+  template:
+    src: "node_exporter.service.j2"
+    dest: "/etc/systemd/system/{{ nde_service_name }}.service"
+    mode: "0644"
+  notify: 
+  - restart node exporter service
