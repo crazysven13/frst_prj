@@ -1,0 +1,32 @@
+[Unit]
+Description={{ pr_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ pr_restart_sec }}
+Restart={{ pr_restart_policy }}
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user={{ pr_host_user_uid }} \
+  --publish={{ pr_host_port }}:{{ pr_container_port }} \
+  --volume={{ pr_host_etc_dir }}:{{ pr_container_etc_dir }} \
+  --volume={{ pr_host_data_dir }}:{{ pr_container_data_dir }} \
+  --name={{ pr_service_name }} \
+  prom/{{ pr_container_name }} \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/prometheus \
+  --storage.tsdb.retention.time=1d
+ExecStop=/usr/bin/{{ pr_container_runtime }} stop {{ pr_service_name }}
+ {% if es_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

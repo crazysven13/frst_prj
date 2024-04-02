@@ -1,0 +1,3 @@
+- name: install mysql
+  include: install.yaml
+  become: true

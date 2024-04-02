@@ -1,0 +1,8 @@
+galaxy_info:
+  author: "Seva from village"
+  description: "test mysql"
+  company: "village"
+  min_ansible_version: "2.10"
+  license: "wut?"
+  
+dependencies: []

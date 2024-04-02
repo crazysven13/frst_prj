@@ -1,0 +1,13 @@
+- name: install elasticsearch exporter
+  include: install.yaml
+  become: true
+  when: not ese_flush_all|bool
+  tags: 
+  - ese_install
+
+- name: uninstall elasticsearch exporter
+  include: uninstall.yaml
+  become: true
+  when: ese_flush_all|bool
+  tags:
+  - ese_uninstall

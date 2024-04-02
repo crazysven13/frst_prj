@@ -1,0 +1,13 @@
+nde_flush_all                              : "false"
+
+nde_service_name                           : "nd_exporter"
+nde_host_name                              : "{{ ansible_hostname }}"
+nde_host_port                              : 9100
+
+nde_container_runtime                      : "docker"
+nde_container_image                        : "bitnami/node-exporter"
+nde_container_name                         : "{{ nde_service_name }}"
+nde_container_port                         : 9100
+
+nde_restart_policy                         : "always"
+nde_restart_sec                            : "100ms"

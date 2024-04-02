@@ -1,0 +1,12 @@
+- name: stop node exporter service
+  systemd:
+    name: "{{ nde_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete node exporter service config
+  file:
+    path: "/etc/systemd/system/{{ nde_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd
