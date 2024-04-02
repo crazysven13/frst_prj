@@ -1,0 +1,12 @@
+- name: stop elasticsearch exporter service
+  systemd:
+    name: "{{ ese_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete elasticsearch exporter service config
+  file:
+    path: "/etc/systemd/system/{{ ese_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

@@ -1,0 +1,19 @@
+ese_flush_all                              : "false"
+
+ese_service_name                           : "es_exporter"
+ese_host_name                              : "{{ ansible_hostname }}"
+ese_host_port                              : 19200
+
+ese_container_runtime                      : "docker"
+ese_container_image                        : "bitnami/elasticsearch-exporter"
+ese_container_name                         : "{{ ese_service_name }}"
+ese_container_port                         : 19200
+
+ese_restart_policy                         : "always"
+ese_restart_sec                            : "100ms"
+
+ese_elasticsearch_user_name                : "elastic"
+ese_elasticsearch_user_password            : "123123"
+ese_elasticsearch_http_port                : 9200
+ese_elasticsearch_listen_port              : "{{ ese_container_port }}"
+ese_elasticsearch_host_adress              : "{{ ese_host_name }}"

@@ -1,0 +1,31 @@
+[Unit]
+Description={{ ese_service_name }}
+{% if ese_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+Restart={{ ese_restart_policy }}
+RestartSec={{ ese_restart_sec }}
+
+ExecStartPre=-/usr/bin/{{ ese_container_runtime }} rm --force {{ ese_container_name }}
+ExecStart=/usr/bin/{{ ese_container_runtime }} run \
+  --rm \
+  --name {{ ese_container_name }} \
+  --publish {{ ese_host_port }}:{{ ese_container_port }} \
+  {{ ese_container_image }} \
+  --es.uri="http://{{ ese_elasticsearch_user_name }}:{{ ese_elasticsearch_user_password }}@{{ ese_elasticsearch_host_adress }}:{{ ese_elasticsearch_http_port }}" \
+  --web.listen-address=:{{ ese_container_port }}
+ExecStop=/usr/bin/{{ ese_container_runtime }} stop -t 10 {{ ese_container_name }}
+
+ExecReload=/usr/bin/{{ ese_container_runtime }} kill --signal HUP {{ ese_container_name }}
+{% if ese_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+- name: restart prometheus service
+  become: true
+  systemd:
+    name: "{{ msq_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
