@@ -1,0 +1,13 @@
+- name: install cadvisor
+  include: install.yaml
+  become: true
+  when: not cad_flush_all|bool
+  tags: 
+  - cad_install
+
+- name: uninstall cadvisor
+  include: uninstall.yaml
+  become: true
+  when: cad_flush_all|bool
+  tags:
+  - cad_uninstall

@@ -1,0 +1,37 @@
+[Unit]
+Description={{ msq_service_name }}
+{% if msq_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+SyslogIdentifier={{ msq_service_name }}
+
+Restart={{ msq_restart_policy }}
+RestartSec={{ msq_restart_sec }}
+
+ExecStartPre=-/usr/bin/{{ msq_container_runtime }} rm --force {{ msq_container_name }}
+ExecStart=/usr/bin/{{ msq_container_runtime }} run \
+  --rm \ 
+  --publish {{ msq_host_port }}:{{ msq_container_port }} \
+  --volume {{ msq_host_db_dir }}:{{ msq_container_db_dir }} \
+  --env MYSQL_ROOT_USER={{ msq_mysql_root_user_name }} \
+  --env MYSQL_ROOT_PASSWORD={{ msq_mysql_root_user_password }} \
+  --env MYSQL_DATABASE={{ msq_mysql_database }} \
+  --env MYSQL_USER={{ msq_mysql_user_name }} \
+  --env MYSQL_PASSWORD={{ msq_mysql_user_password }} \
+  --name {{ msq_service_name }} \
+  {{ msq_container_image }}
+ExecStop=/usr/bin/{{ msq_container_runtime }} stop -t 10 {{ msq_container_name }}
+
+ExecReload=/usr/bin/{{ msq_container_runtime }} kill --signal HUP {{ msq_container_name }}
+{% if msq_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

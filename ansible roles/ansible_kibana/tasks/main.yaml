@@ -1,0 +1,13 @@
+- name: install kibana
+  include: install.yaml
+  become: true
+  when: not kb_flush_all|bool
+  tags: 
+  - kb_install
+
+- name: uninstall kibana
+  include: uninstall.yaml
+  become: true
+  when: kb_flush_all|bool
+  tags:
+  - kb_uninstall

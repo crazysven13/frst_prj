@@ -16,12 +16,12 @@ ExecStart=/usr/bin/docker run \
   --rm \
   --user={{ pr_host_user_uid }} \
   --publish={{ pr_host_port }}:{{ pr_container_port }} \
-  --volume={{ pr_host_etc_dir }}:{{ pr_container_etc_dir }} \
+  --volume={{ pr_host_config_dir }}:{{ pr_container_config_dir }} \
   --volume={{ pr_host_data_dir }}:{{ pr_container_data_dir }} \
   --name={{ pr_service_name }} \
   prom/{{ pr_container_name }} \
-  --config.file=/etc/prometheus/prometheus.yml \
-  --storage.tsdb.path=/prometheus \
+  --config.file={{ pr_container_config_dir }}/prometheus.yml \
+  --storage.tsdb.path=/{{ pr_container_data_dir}} \
   --storage.tsdb.retention.time=1d
 ExecStop=/usr/bin/{{ pr_container_runtime }} stop {{ pr_service_name }}
  {% if es_container_runtime == "podman" +%}
@@ -30,3 +30,7 @@ KillMode=none
 
 [Install]
 WantedBy=multi-user.target
+
+pr_host_config_dir
+
+pr_container_config_dir

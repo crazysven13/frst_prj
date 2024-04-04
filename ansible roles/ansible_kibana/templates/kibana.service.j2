@@ -1,0 +1,31 @@
+[Unit]
+Description={{ kb_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ kb_restart_sec }}
+Restart={{ kb_restart_policy }}
+
+ExecStartkbe=-/usr/bin/{{ kb_container_runtime }} rm --force {{ kb_container_name }}
+ExecStart=/usr/bin/{{ kb_container_runtime }} run \
+  --rm \
+  --user={{ kb_host_user_uid }} \
+  --publish={{ kb_host_port }}:{{ kb_container_port }} \
+  --volume={{ kb_host_config_dir }}:{{ kb_container_config_dir }} \
+  --name={{ kb_container_name }} \
+  {{ kb_container_image }}
+ExecStop=/usr/bin/{{ kb_container_runtime }} stop -t 10 {{ kb_container_name }}
+
+ExecReload=/usr/bin/{{ kb_container_runtime }} kill --signal HUP {{ kb_container_name }}
+{% if kb_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

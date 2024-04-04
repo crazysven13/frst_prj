@@ -1,0 +1,15 @@
+- name: copy service config
+  template:
+    src: "cadvisor.service.j2"
+    dest: "/etc/systemd/system/{{ cad_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+- name: restart cadvisor service
+  become: true
+  systemd:
+    name: "{{ cad_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

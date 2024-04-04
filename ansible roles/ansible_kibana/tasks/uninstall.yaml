@@ -1,0 +1,17 @@
+- name: stop kibana service
+  systemd:
+    name: "{{kb_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete directories
+  file:
+    path: "{{ kb_host_config_dir }}"
+    state: absent
+
+- name: delete kibana config
+  file:
+    path: "/etc/systemd/system/{{ kb_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

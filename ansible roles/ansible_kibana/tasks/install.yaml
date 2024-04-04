@@ -1,0 +1,30 @@
+- name: create directories
+  file:
+    path: "{{ kb_host_config_dir }}"
+    state: directory
+    mode: 0755
+
+- name: copy kibana config 
+  template:
+    src: "kibana.yml.j2"
+    dest: "{{ kb_host_config_dir }}/kibana.yml"
+    owner: "{{ kb_host_user_name }}"
+    group: "{{ kb_host_user_name }}"
+  notify: 
+  - restart kibana service
+
+- name: copy service config
+  template:
+    src: "kibana.service.j2"
+    dest: "/etc/systemd/system/{{ kb_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+- name: restart kibana service
+  become: true
+  systemd:
+    name: "{{ kb_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

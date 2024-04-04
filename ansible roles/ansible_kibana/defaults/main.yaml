@@ -1,0 +1,21 @@
+kb_service_name                            : "kibana"
+kb_host_name                               : "{{ ansible_hostname }}"
+kb_host_config_dir                         : "/data/kibana/config"
+kb_host_group_name                         : "kibana"
+kb_host_user_name                          : "kibana"
+kb_host_user_uid                           : "1901"
+kb_host_port                               : 5601
+
+kb_container_runtime                       : "docker"
+kb_container_image                         : "kibana:8.12.1"
+kb_container_name                          : "{{ kb_service_name }}"
+
+kb_container_config_dir                    : "/usr/share/kibana/config"
+kb_container_port                          : 5601
+
+kb_elasticsearch_user_name                 : "kibana_system"
+kb_elasticsearch_user_password             : "123123"
+
+kb_start_pause                             : 30
+kb_restart_policy                          : "always"
+kb_restart_sec                             : "100ms"

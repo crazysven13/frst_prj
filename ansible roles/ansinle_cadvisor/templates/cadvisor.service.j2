@@ -1,0 +1,35 @@
+[Unit]
+Description={{ cad_service_name }}
+{% if cad_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+Restart={{ cad_restart_policy }}
+RestartSec={{ cad_restart_sec }}
+
+ExecStartPre=-/usr/bin/{{ cad_container_runtime }} rm --force {{ cad_container_name }}
+ExecStart=/usr/bin/{{ cad_container_runtime }} run \
+  --rm \
+  --name {{ cad_container_name }} \
+  --publish {{ cad_host_port }}:{{ cad_container_port }} \
+  --volume={{ cad_host_root_dir }}:{{ cad_container_root_dir }}:ro \
+  --volume={{ cad_host_run_dir }}:{{ cad_container_run_dir }}:ro \
+  --volume={{ cad_host_sys_dir }}:{{ cad_container_sys_dir }}:ro \
+  --volume={{ cad_host_docker_dir }}:{{ cad_container_docker_dir }}:ro \
+  --volume={{ cad_host_disk_dir }}:{{ cad_container_disk_dir }}:ro \
+  --privileged={{ cad_privileged }} \
+  {{ cad_container_image }}
+ExecStop=/usr/bin/{{ cad_container_runtime }} stop -t 10 {{ cad_container_name }}
+
+ExecReload=/usr/bin/{{ cad_container_runtime }} kill --signal HUP {{ cad_container_name }}
+{% if cad_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

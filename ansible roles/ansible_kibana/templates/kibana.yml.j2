@@ -1,0 +1,5 @@
+server.host: "{{ kb_host_name }}"
+server.port: "{{ kb_host_port }}"
+elasticsearch.hosts: ["http://{{ kb_host_name }}:9200"]
+elasticsearch.username: "{{ kb_elasticsearch_user_name }}"
+elasticsearch.password: "{{ kb_elasticsearch_user_password }}"

@@ -1,6 +1,6 @@
 pr_service_name                            : "prometheus"
 pr_host_name                               : "{{ ansible_hostname }}"
-pr_host_etc_dir                            : "/etc/{{ pr_service_name }}"
+pr_host_config_dir                            : "/etc/{{ pr_service_name }}"
 pr_host_data_dir                           : "/data/{{ pr_service_name }}"
 pr_host_group_name                         : "prometheus"
 pr_host_user_name                          : "prometheus"
@@ -11,7 +11,7 @@ pr_container_runtime                       : "docker"
 pr_container_image                         : "prometheus"
 pr_container_name                          : "{{ pr_service_name }}"
 
-pr_container_etc_dir                       : "/etc/{{ pr_service_name }}"
+pr_container_config_dir                    : "/etc/{{ pr_service_name }}"
 pr_container_data_dir                      : "/{{ pr_service_name }}"
 pr_container_port                          : 9090
 
@@ -20,6 +20,5 @@ pr_restart_policy                          : "always"
 pr_restart_sec                             : "100ms"
 
 pr_directories                             :
-  - "{{ pr_host_etc_dir }}"
   - "{{ pr_host_data_dir }}"
-  - "{{ es_host_config_dir }}"
+  - "{{ pr_host_config_dir }}"

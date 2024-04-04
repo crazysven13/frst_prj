@@ -1,0 +1,12 @@
+- name: stop cadvisor service
+  systemd:
+    name: "{{ cad_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete cadvisor config
+  file:
+    path: "/etc/systemd/system/{{ cad_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

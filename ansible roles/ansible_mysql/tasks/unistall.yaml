@@ -1,0 +1,12 @@
+- name: stop mysql service
+  systemd:
+    name: "{{ msq_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete mysql config
+  file:
+    path: "/etc/systemd/system/{{ msq_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

@@ -1,7 +1,0 @@
-- name: copy service config
-  template:
-    src: "elasticsearch_exporter.service.j2"
-    dest: "/etc/systemd/system/{{ ese_service_name }}.service"
-    mode: "0644"
-  notify: 
-  - restart elasticsearch exporter service

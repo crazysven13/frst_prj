@@ -1,0 +1,36 @@
+[Unit]
+Description={{ mse_service_name }}
+{% if mse_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+SyslogIdentifier={{ mse_service_name }}
+
+Restart={{ mse_restart_policy }}
+RestartSec={{ mse_restart_sec }}
+
+ExecStartPre=-/usr/bin/{{ mse_container_runtime }} rm --force {{ mse_container_name }}
+ExecStart=/usr/bin/{{ mse_container_runtime }} run \
+  --rm \
+  --public {{ mse_host_port }}:{{ mse_container_port }} \
+  --volume {{ mse_host_config_dir }}:{{ mse_container_config_dir }} \
+  --env DATA_SOURCE_NAME="{{ mse_mysql_root_user_name }}:{{ mse_mysql_root_user_password }}@{{ mse_host_name }}:{{ mse_mysql_host_port }}/{{ mse_mysql_database }}" \
+  --name {{ mse_container_name }} \
+  {{ mse_container_image }} \
+  --config.my-cnf={{ mse_container_config_dir }}/.my.cnf
+ExecStop=/usr/bin/docker stop -t 10 {{ mse_container_name }}
+
+ExecStop=/usr/bin/{{ mse_container_runtime }} stop -t 10 {{ mse_container_name }}
+
+ExecReload=/usr/bin/{{ mse_container_runtime }} kill --signal HUP {{ mse_container_name }}
+{% if mse_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

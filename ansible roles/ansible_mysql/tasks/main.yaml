@@ -1,0 +1,13 @@
+- name: install mysql
+  include: install.yaml
+  become: true
+  when: not msq_flush_all|bool
+  tags: 
+  - msq_install
+
+- name: uninstall mysql
+  include: uninstall.yaml
+  become: true
+  when: msq_flush_all|bool
+  tags:
+  - msq_uninstall

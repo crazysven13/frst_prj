@@ -1,0 +1,24 @@
+cad_flush_all                              : "false"
+cad_privileged                             : "true"
+
+cad_service_name                           : "cadvisor"
+cad_host_name                              : "{{ ansible_hostname }}"
+cad_host_port                              : 8080
+cad_host_root_dir                          : "/"
+cad_host_run_dir                           : "/var/run"
+cad_host_sys_dir                           : "/sys"
+cad_host_runtime_dir                       : "/var/lib/{{ cad_container_runtime }}/"
+cad_host_disk_dir                          : "/dev/disk/"
+
+cad_container_runtime                      : "docker"
+cad_container_image                        : "gcr.io/cadvisor/cadvisor:v0.44.0"
+cad_container_name                         : "{{ cad_service_name }}"
+cad_container_port                         : 8080
+cad_container_root_dir                     : "/rootfs"
+cad_container_run_dir                      : "/var/run"
+cad_container_sys_dir                      : "/sys"
+cad_container_docker_dir                   : "/var/lib/docker"
+cad_container_disk_dir                     : "/dev/disk"
+
+cad_restart_policy                         : "always"
+cad_restart_sec                            : "100ms"

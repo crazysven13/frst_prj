@@ -1,0 +1,26 @@
+mse_flush_all                              : "false"
+
+mse_service_name                           : "mysql_exporter"
+mse_host_name                              : "{{ ansible_hostname }}"
+mse_host_user_name                         : "mysql"
+mse_host_port                              : 9104
+mse_host_config_dir                        : "/etc/{{ mse_service_name }}"
+
+mse_container_runtime                      : "docker"
+mse_container_image                        : "prom/mysqld-exporter"
+mse_container_name                         : "{{ mse_service_name }}"
+
+mse_container_config_dir                   : "/cfg"
+mse_container_port                         : 9104
+
+mse_start_pause                            : 30
+mse_restart_policy                         : "always"
+mse_restart_sec                            : "100ms"
+
+mse_mysql_root_user_name                   : "root"      
+mse_mysql_root_user_password               : "rootpassword"
+mse_mysql_database                         : "tst_db"
+mse_mysql_host_port                        : 3306
+
+mse_mysql_config_user_name                 : "user"
+mse_mysql_config_user_password             : "rootpassword"

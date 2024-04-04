@@ -1,0 +1,13 @@
+- name: install mysql exporter
+  include: install.yaml
+  become: true
+  when: not mse_flush_all|bool
+  tags: 
+  - mse_install
+
+- name: uninstall mysql exporter
+  include: uninstall.yaml
+  become: true
+  when: mse_flush_all|bool
+  tags:
+  - mse_uninstall
