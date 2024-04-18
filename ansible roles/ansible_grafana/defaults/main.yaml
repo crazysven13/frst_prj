@@ -1,0 +1,33 @@
+gr_flush_all                               : "false"
+
+gr_service_name                            : "grafana"
+gr_host_name                               : "{{ ansible_hostname }}"
+gr_host_provisioning_dir                   : "/etc/grafana/provisioning"
+gr_host_provisioning_dashboards_dir        : "/etc/grafana/provisioning/dashboards"
+gr_host_provisioning_datasource_dir        : "/etc/grafana/provisioning/datasources"
+gr_host_dashboards_dir                     : "/data/grafana/dashboards"
+gr_host_data_dir                           : "/data/grafana"
+gr_host_user_name                          : "grafana"
+gr_host_group_name                         : "{{ gr_host_user_name }}"
+gr_host_user_uid                           : "1102"
+gr_host_port                               : 3000
+
+gr_container_runtime                       : "docker"
+gr_container_image                         : "grafana:9.2.8"
+gr_container_name                          : "{{ gr_service_name }}"
+gr_container_port                          : 3000
+gr_container_provisioning_dir              : "/etc/grafana/provisioning"
+gr_container_data_dir                      : "/var/lib/grafana"
+gr_container_dashboards_dir                : "/var/lib/grafana/dashboards"
+
+gr_restart_policy                          : "always"
+gr_restart_sec                             : "100ms"
+
+gr_prometheus_http_port                    : 9090
+
+gr_directories                             :
+  - "{{ gr_host_provisioning_dir }}"
+  - "{{ gr_host_provisioning_dashboards_dir }}"
+  - "{{ gr_host_provisioning_datasource_dir }}"
+  - "{{ gr_host_dashboards_dir }}"
+  - "{{ gr_host_data_dir }}"

@@ -1,0 +1,63 @@
+- name: create grafana user
+  user:
+    name: "{{ gr_host_user_name }}"
+    uid: "{{ gr_host_user_uid }}"
+    comment: "grafana"
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ gr_host_user_name }}"
+    group: "{{ gr_host_user_name }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - "{{ gr_directories }}"
+
+- name: copy grafana datasource config 
+  template:
+    src: "datasources_main.yaml.j2"
+    dest: "{{ gr_host_provisioning_datasource_dir }}/main.yml"
+    owner: "{{ gr_host_user_name }}"
+    group: "{{ gr_host_user_name }}"
+  notify: 
+  - restart grafana service
+
+- name: copy grafana dashboards config 
+  template:
+    src: "dashboards_main.yaml.j2"
+    dest: "{{ gr_host_provisioning_dashboards_dir }}/main.yml"
+    owner: "{{ gr_host_user_name }}"
+    group: "{{ gr_host_user_name }}"
+  notify: 
+  - restart grafana service
+
+- name: copy grafana dashboards
+  template:
+    src: "{{ item }}"
+    dest: "{{ gr_host_dashboards_dir }}/main.yml"
+    owner: "{{ gr_host_user_name }}"
+    group: "{{ gr_host_user_name }}"
+  with_items:
+  - "cadvisor.json"
+  - "es-exporter.json"
+  - "mysql.json"
+  - "node-exporter-full.json"
+  notify: 
+  - restart grafana service
+
+- name: copy service config
+  template:
+    src: "grafana.service.j2"
+    dest: "/etc/systemd/system/{{ gr_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+- name: restart grafana service
+  become: true
+  systemd:
+    name: "{{ gr_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

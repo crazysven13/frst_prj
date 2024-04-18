@@ -1,0 +1,32 @@
+[Unit]
+Description={{ gr_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ gr_restart_sec }}
+Restart={{ gr_restart_policy }}
+
+ExecStartPre=-/usr/bin/{{ gr_container_runtime }} rm --force {{ gr_container_name }}
+ExecStart=/usr/bin/{{ gr_container_runtime }} run \
+  --rm \
+  --user={{ gr_host_user_uid }} \
+  --publish={{ gr_host_port }}:{{ gr_container_port }} \
+  --volume={{ gr_host_provisioning_dir }}:{{ gr_container_provisioning_dir }} \
+  --volume={{ gr_host_data_dir }}:{{ gr_container_data_dir }} \
+  --name={{ gr_service_name }} \
+  {{ gr_container_image }}
+ExecStop=/usr/bin/{{ gr_container_runtime }} stop -t 10 {{ gr_container_name }}
+
+ExecReload=/usr/bin/{{ gr_container_runtime }} kill --signal HUP {{ gr_container_name }}
+{% if gr_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

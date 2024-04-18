@@ -12,7 +12,7 @@ Wants=network.target
 RestartSec={{ kb_restart_sec }}
 Restart={{ kb_restart_policy }}
 
-ExecStartkbe=-/usr/bin/{{ kb_container_runtime }} rm --force {{ kb_container_name }}
+ExecStartPre=-/usr/bin/{{ kb_container_runtime }} rm --force {{ kb_container_name }}
 ExecStart=/usr/bin/{{ kb_container_runtime }} run \
   --rm \
   --user={{ kb_host_user_uid }} \

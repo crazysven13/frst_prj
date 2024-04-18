@@ -1,5 +1,5 @@
 cluster.name: ess-seva
-discovery.seed_hosts: []
+discovery.type: single-node
 node.name: node-1
 network.host: <localhost>
 transport.host: <localhost>

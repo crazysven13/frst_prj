@@ -1,0 +1,13 @@
+- name: install grafana
+  include: install.yaml
+  become: true
+  when: not gr_flush_all|bool
+  tags: 
+  - gr_install
+
+- name: uninstall grafana
+  include: uninstall.yaml
+  become: true
+  when: gr_flush_all|bool
+  tags:
+  - gr_uninstall

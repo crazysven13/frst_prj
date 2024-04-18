@@ -1,6 +1,6 @@
 - name: stop kibana service
   systemd:
-    name: "{{kb_service_name }}"
+    name: "{{ kb_service_name }}"
     enabled: false
     state: stopped
 
