@@ -1,0 +1,34 @@
+lg_flush_all                               : "false"
+
+lg_service_name                            : "logstash"
+lg_host_name                               : "{{ ansible_hostname }}"
+lg_host_pipelines_dir                      : "/data/logstash/pipeline/"
+lg_host_config_dir                         : "/data/logstash/config/"
+lg_host_user_name                          : "logstash"
+lg_host_group_name                         : "{{ lg_host_user_name }}"
+lg_host_user_uid                           : "1902"
+
+lg_logstash_input_udp_port                 : "10514"
+
+lg_container_runtime                       : "docker"
+lg_container_image                         : "logstash:7.10.1"
+lg_container_name                          : "{{ lg_service_name }}"
+lg_container_pipelines_dir                 : "/usr/share/logstash/pipeline/"
+lg_container_config_dir                    : "/usr/share/logstash/config/"
+lg_container_config_path                   : "/usr/share/logstash/pipeline"
+
+lg_env_LS_JAVA_OPTS_Xms                    : "512m"
+lg_env_LS_JAVA_OPTS_Xmx                    : "512m"
+lg_env_discovery_type                      : "discovery.type=single-node"
+
+lg_restart_policy                          : "always"
+lg_restart_sec                             : "100ms"
+
+lg_elasticsearch_http_port                 : 9200
+lg_elasticsearch_user_name                 : "elastic"
+lg_elasticsearch_user_password             : "123123"
+lg_elasticsearch_index_name                : "{{ lg_service_name }}"
+
+lg_directories                             :
+  - "{{ lg_host_pipelines_dir }}"
+  - "{{ lg_host_config_dir }}"

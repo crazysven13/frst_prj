@@ -1,0 +1,20 @@
+- name: install rsyslog
+  yum:
+    name: rsyslog
+    state: present
+
+- name: copy rsyslog config 
+  template:
+    src: "60-output.conf.j2"
+    dest: "{{ rs_config_dir }}/60-output.conf"
+    mode: 0644
+  notify: 
+  - restart rsyslog service
+
+- name: copy rsyslog config 
+  copy:
+    src: "01-json-template.conf.j2"
+    dest: "{{ rs_config_dir }}/01-json-template.conf"
+    mode: 0644
+  notify: 
+  - restart rsyslog service

@@ -1,0 +1,13 @@
+- name: install rsyslog
+  include: install.yaml
+  become: true
+  when: not rs_flush_all|bool
+  tags: 
+  - rs_install
+
+- name: uninstall rsyslog
+  include: uninstall.yaml
+  become: true
+  when: rs_flush_all|bool
+  tags:
+  - rs_uninstall

@@ -1,0 +1,49 @@
+- name: create logstash user
+  user:
+    name: "{{ lg_host_user_name }}"
+    uid: "{{ lg_host_user_uid }}"
+    comment: "logstash"
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ lg_host_user_name }}"
+    group: "{{ lg_host_user_name }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - "{{ lg_directories }}"
+
+- name: copy logstash pipeline config 
+  template:
+    src: "pipelines.conf.j2"
+    dest: "{{ lg_host_pipelines_dir }}/pipelines.conf"
+    owner: "{{ lg_host_user_name }}"
+    group: "{{ lg_host_user_name }}"
+  notify: 
+  - restart logstash service
+
+- name: copy logstash config 
+  copy:
+    src: "logstash.yml"
+    dest: "{{ lg_host_config_dir }}/logstash.yml"
+    owner: "{{ lg_host_user_name }}"
+    group: "{{ lg_host_user_name }}"
+  notify: 
+  - restart logstash service
+
+- name: copy service config
+  template:
+    src: "logstash.service.j2"
+    dest: "/etc/systemd/system/{{ lg_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+- name: restart logstash service
+  become: true
+  systemd:
+    name: "{{ lg_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

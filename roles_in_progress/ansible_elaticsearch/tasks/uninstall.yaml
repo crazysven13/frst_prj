@@ -1,0 +1,19 @@
+- name: stop elasticsearch service
+  systemd:
+    name: "{{ es_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items: 
+  - "{{ es_directories }}"
+
+- name: delete elasticsearch service config
+  file:
+    path: "/etc/systemd/system/{{ es_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

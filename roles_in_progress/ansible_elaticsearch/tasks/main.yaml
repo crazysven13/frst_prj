@@ -1,0 +1,13 @@
+- name: install elasticsearch
+  include: install.yaml
+  become: true
+  when: not es_flush_all|bool
+  tags: 
+  - es_install
+
+- name: uninstall elasticsearch
+  include: uninstall.yaml
+  become: true
+  when: es_flush_all|bool
+  tags:
+  - es_uninstall

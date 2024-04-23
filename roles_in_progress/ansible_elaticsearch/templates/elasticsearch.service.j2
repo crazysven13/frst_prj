@@ -1,0 +1,40 @@
+[Unit]
+Description={{ es_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ es_restart_sec }}
+Restart={{ es_restart_policy }}
+
+ExecStartPre=-/usr/bin/{{ es_container_runtime }} rm --force {{ es_container_name }}
+ExecStart=/usr/bin/{{ es_container_runtime }} run \
+  --rm \
+  --user={{ es_host_user_uid }} \
+  --net=host \
+  --memory={{ es_container_memory }} \
+  --memory-swap={{ es_container_memory }} \
+  --cpus="{{ es_container_cpus }}" \
+  --volume={{ es_host_data_dir }}:{{ es_container_data_dir }} \
+  --volume={{ es_host_logs_dir }}:{{ es_container_logs_dir }} \
+  --volume={{ es_host_config_dir }}:{{ es_container_config_dir }} \
+  --env "ES_JAVA_OPTS=-Xms{{ es_env_LS_JAVA_OPTS_Xms }} -Xmx{{ es_env_LS_JAVA_OPTS_Xmx }}" \
+  --env "ELASTIC_PASSWORD={{ es_elasticsearch_user_password }}" \
+  --env "ES_PATH_CONF={{ es_container_config_path }}" \
+  --name {{ es_service_name }} \
+  {{ es_container_image }}
+
+ExecStop=/usr/bin/{{ es_container_runtime }} stop -t 10 {{ es_container_name }}
+
+ExecReload=/usr/bin/{{ es_container_runtime }} kill --signal HUP {{ es_container_name }}
+{% if es_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,36 @@
+[Unit]
+Description={{ lg_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ lg_restart_sec }}
+Restart={{ lg_restart_policy }}
+
+ExecStartPre=-/usr/bin/{{ lg_container_runtime }} rm --force {{ lg_container_name }}
+ExecStart=/usr/bin/{{ lg_container_runtime }} run \
+  --rm \
+  --user={{ lg_host_user_uid }} \
+  --net=host \
+  --volume={{ lg_host_pipelines_dir }}:{{ lg_container_pipelines_dir }} \
+  --volume={{ lg_host_config_dir }}:{{ lg_container_config_dir }} \
+  --env "LS_JAVA_OPTS=-Xms{{ lg_env_LS_JAVA_OPTS_Xms }} -Xmx{{ lg_env_LS_JAVA_OPTS_Xmx }}" \
+  --env "{{ lg_env_discovery_type }}" \
+  --name={{ lg_container_name }} \
+  {{ lg_container_image }} \
+  --path.config={{ lg_container_config_path }}/pipelines.conf
+
+ExecStop=/usr/bin/{{ lg_container_runtime }} stop -t 10 {{ lg_container_name }}
+
+ExecReload=/usr/bin/{{ lg_container_runtime }} kill --signal HUP {{ lg_container_name }}
+{% if lg_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

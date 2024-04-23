@@ -1,0 +1,29 @@
+input {
+  udp {
+    port => "{{ lg_logstash_input_udp_port }}"
+    codec => "json"
+    type => "rsyslog"
+  }
+}
+
+# This is an empty filter block.  You can later add other filters here to further process
+# your log lines
+
+filter {
+    json {
+        source => "message"
+        skip_on_invalid_json => true
+    }
+}
+
+# This output block will send all events of type "rsyslog" to Elasticsearch at the configured
+# host and port into daily indices of the pattern, "rsyslog-YYYY.MM.DD"
+
+output {
+      elasticsearch {
+      index => "{{ lg_elasticsearch_index_name }}-%{+yyyy.MM.dd}"
+      hosts => "{{ lg_host_name }}:{{ lg_elasticsearch_http_port }}"
+      user => "{{ lg_elasticsearch_user_name }}"
+      password => "{{ lg_elasticsearch_user_password }}"
+    }
+}

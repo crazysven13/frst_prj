@@ -1,0 +1,13 @@
+- name: install logstash
+  include: install.yaml
+  become: true
+  when: not lg_flush_all|bool
+  tags: 
+  - lg_install
+
+- name: uninstall logstash
+  include: uninstall.yaml
+  become: true
+  when: lg_flush_all|bool
+  tags:
+  - lg_uninstall

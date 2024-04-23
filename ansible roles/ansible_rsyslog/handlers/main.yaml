@@ -1,0 +1,7 @@
+- name: restart rsyslog service
+  become: true
+  systemd:
+    name: "{{ rs_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,15 @@
+- name: stop logstash service
+  systemd:
+    name: "{{ lg_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: uninstall rsyslog
+  yum:
+    name: rsyslog
+    state: absent
+
+- name: delete files
+  file:
+    path: "{{ rs_config_dir }}"
+    state: absent

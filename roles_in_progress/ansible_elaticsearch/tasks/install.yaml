@@ -1,0 +1,56 @@
+- name: create elasticsearch user
+  user:
+    name: "{{ es_host_user_name }}"
+    uid: "{{ es_host_user_uid }}"
+    comment: "elasticsearch"
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ es_host_user_name }}"
+    group: "{{ es_host_user_name }}"
+    state: directory
+    mode: 0755
+  loop:
+  - "{{ es_host_data_dir }}"
+  - "{{ es_host_logs_dir }}"
+  - "{{ es_host_config_dir }}"
+
+- name: copy elasticsearch config
+  copy:
+    src: "{{ item }}"
+    dest: "{{ es_host_config_dir }}"
+    owner: "{{ es_host_user_name }}"
+    group: "{{ es_host_user_name }}"
+  loop:
+  - "elasticsearch-plugins.example.yml"
+  - "elasticsearch.keystore"
+  - "jvm.options"
+  - "log4j2.properties"
+  notify: 
+  - restart elasticsearch service
+
+- name: copy elasticsearch config 
+  template:
+    src: "elasticsearch.yml.j2"
+    dest: "{{ es_host_config_dir }}/elasticsearch.yml"
+    owner: "{{ es_host_user_name }}"
+    group: "{{ es_host_user_name }}"
+  notify: 
+  - restart elasticsearch service
+
+- name: copy service config
+  template:
+    src: "elasticsearch.service.j2"
+    dest: "/etc/systemd/system/{{ es_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+- name: restart elasticsearch service
+  become: true
+  systemd:
+    name: "{{ es_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

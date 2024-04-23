@@ -1,0 +1,4 @@
+# cUrl запрос с с тестовым сообщением. thread_id: "1" chat_id: "-1002064597853"
+curl -X POST -H 'Content-Type: application/json'   -d '{"reply_to_thread_id": "1", "chat_id": "-1002064597853", "text": "This is a test message cUrl"}'   https://api.telegram.org/bot$TG_BOT/sendMessage
+# Успешный ответ на запрос, сообщение пришло в чат
+# {"ok":true,"result":{"message_id":9,"from":{"id":7044552304,"is_bot":true,"first_name":"AlertBot_test","username":"crazy_sven13alert_bot"},"chat":{"id":-1002064597853,"title":"\u26a0\ufe0fAlert_test","is_forum":true,"type":"supergroup"},"date":1713868355,"text":"This is a test message cUrl"}}

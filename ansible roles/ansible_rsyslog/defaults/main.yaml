@@ -1,0 +1,8 @@
+rs_flush_all                               : "false"
+
+rs_service_name                            : "rsyslog"
+
+rs_config_dir                              : "/etc/rsyslog.d/"
+
+rs_logstash_input_udp_port                 : "10514"
+

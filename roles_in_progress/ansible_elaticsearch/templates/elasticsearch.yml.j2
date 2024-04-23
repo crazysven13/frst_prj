@@ -1,0 +1,11 @@
+cluster.name: {{ es_host_name }}
+{{ es_env_discovery_type }}
+node.name: {{ es_node_name }}
+network.host: {{ es_host_name }}
+transport.host: {{ es_host_name }}
+xpack.license.self_generated.type: trial
+xpack.security.enabled: false
+
+path:
+  data: {{ es_container_data_dir }}
+  logs: {{ es_container_logs_dir }}
