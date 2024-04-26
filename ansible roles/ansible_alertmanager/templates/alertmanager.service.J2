@@ -1,0 +1,33 @@
+[Unit]
+Description={{ ar_service_name }}
+{% if es_container_runtime == "docker" %}
+Requires=docker.service
+After=docker.service
+{% else %}
+After=network.target
+Wants=network.target
+{% endif %}
+
+[Service]
+RestartSec={{ ar_restart_sec }}
+Restart={{ ar_restart_policy }}
+
+ExecStartPre=-/usr/bin/{{ ar_container_runtime }} rm --force {{ ar_container_name }}
+ExecStart=/usr/bin/{{ ar_container_runtime }} run \
+  --rm \
+  --user={{ ar_host_user_uid }} \
+  --publish={{ ar_host_port }}:{{ ar_container_port }} \
+  --volume={{ ar_host_config_dir }}:{{ ar_container_config_dir }} \
+  --volume={{ ar_host_data_dir }}:{{ ar_container_data_dir }} \
+  --name={{ ar_service_name }} \
+  {{ ar_container_image }} \
+  --config.file={{ ar_container_config_dir }}
+ExecStop=/usr/bin/{{ ar_container_runtime }} stop -t 10 {{ ar_container_name }}
+
+ExecReload=/usr/bin/{{ ar_container_runtime }} kill --signal HUP {{ ar_container_name }}
+{% if ar_container_runtime == "podman" +%}
+KillMode=none
+{%+ endif %}
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+global:
+  resolve_timeout: 10s
+
+route:
+  group_by: ['alertname']
+  group_wait: 3s
+  receiver: 'telegram_bot'
+
+receivers:
+- name: 'telegram_bot'
+  telegram_configs:
+  - bot_token: '7044552304:AAErId44bqxk1wiFPjcAvTDRaU-w4BMkUzY'
+    api_url: 'https://api.telegram.org'
+    chat_id: -1002064597853
+    parse_mode: 'HTML'

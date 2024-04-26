@@ -1,0 +1,12 @@
+- name: restart alertmanager service
+  become: true
+  systemd:
+    name: "{{ ar_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: reload systemd
+  become: true
+  systemd:
+    daemon_reload: yes

@@ -1,0 +1,11 @@
+groups:
+- name: AllInstances
+  rules:
+  - alert: InstanceDown
+    expr: (time() - container_last_seen) > 15
+    for: 10s
+    annotations:
+      title: 'Container {{ $labels.name }} down'
+      description: '{{ $labels.name }} pizdanoolsya'
+    labels:
+      severity: 'critical'

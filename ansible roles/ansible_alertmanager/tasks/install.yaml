@@ -1,0 +1,40 @@
+- name: create alertmanager user
+  user:
+    name: "{{ ar_host_user_name }}"
+    uid: "{{ ar_host_user_uid }}"
+    comment: "alertmanager"
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ ar_host_user_name }}"
+    group: "{{ ar_host_user_name }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - "{{ ar_directories }}"
+
+- name: copy alertmanager config
+  template:
+    src: "alertmanager.yml.j2"
+    dest: "{{ ar_host_config_dir }}/alertmanager.yml"
+    owner: "{{ ar_host_user_name }}"
+    group: "{{ ar_host_user_name }}"
+  notify: 
+  - restart alertmanager service
+
+- name: copy service config
+  template:
+    src: "alertmanager.service.j2"
+    dest: "/etc/systemd/system/{{ ar_service_name }}.service"
+    mode: 0644
+  notify: 
+  - reload systemd
+
+  - name: restart alertmanager service
+  become: true
+  systemd:
+    name: "{{ ar_service_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes

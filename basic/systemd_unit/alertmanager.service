@@ -1,0 +1,21 @@
+[Unit]
+Description=alertmanager
+After=network.target docker.socket
+Requires=docker.socket
+
+[Service]
+Restart=always
+
+ExecStart=/usr/bin/docker run \
+  --rm \
+  --user=1903 \
+  --publish=9093:9093 \
+  --volume=/etc/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yaml \
+  --volume=/data/alertmanager:/alertmanager \
+  --name=alertmanager \
+  prom/alertmanager \
+  --config.file=/etc/alertmanager/alertmanager.yaml
+ExecStop=/usr/bin/docker stop alertmanager
+ 
+[Install]
+WantedBy=multi-user.target

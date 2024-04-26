@@ -1,0 +1,17 @@
+- name: stop alertmanager service
+  systemd:
+    name: "{{ ar_service_name }}"
+    enabled: false
+    state: stopped
+
+- name: delete directories
+  file:
+    path: "{{ ar_directories }}"
+    state: absent
+
+- name: delete alertmanager config
+  file:
+    path: "/etc/systemd/system/{{ ar_service_name }}.service"
+    state: absent
+  notify: 
+  - reload systemd

@@ -1,0 +1,34 @@
+ar_flush_all                               : "false"
+
+ar_service_name                            : "alertmanager"
+ar_host_name                               : "{{ ansible_hostname }}"
+ar_host_config_dir                         : "/etc/alertmanager/alertmanager.yml"
+ar_host_data_dir                           : "/data/alertmanager"
+ar_host_user_name                          : "alertmanager"
+ar_host_group_name                         : "{{ ar_host_user_name }}"
+ar_host_user_uid                           : "1903"
+ar_host_port                               : 9093
+
+ar_container_runtime                       : "docker"
+ar_container_image                         : "prom/alertmanager"
+ar_container_name                          : "{{ ar_service_name }}"
+ar_container_port                          : 9093
+ar_container_config_dir                    : "/etc/alertmanager/alertmanager.yaml"
+ar_container_data_dir                      : "/alertmanager"
+
+ar_restart_policy                          : "always"
+ar_restart_sec                             : "100ms"
+
+ar_config_resolve_timeout                  : "10s"
+ar_config_route_group_wait                 : "3s"
+ar_config_route_reciever                   : "telegram_bot"
+
+ar_config_recievers_name                   : "{{ ar_config_route_reciever }}"
+ar_config_tg_bot_token                     : "bot_token"
+ar_config_tg_api_url                       : "https://api.telegram.org"
+ar_config_tg_chat_id                       : "chat_id"
+ar_config_tg_parse_mode                    : "HTML"
+
+ar_directories                             :
+  - "{{ ar_host_config_dir }}"
+  - "{{ ar_host_data_dir }}"

@@ -1,6 +1,6 @@
 pr_service_name                            : "prometheus"
 pr_host_name                               : "{{ ansible_hostname }}"
-pr_host_config_dir                            : "/etc/{{ pr_service_name }}"
+pr_host_config_dir                         : "/etc/{{ pr_service_name }}"
 pr_host_data_dir                           : "/data/{{ pr_service_name }}"
 pr_host_group_name                         : "prometheus"
 pr_host_user_name                          : "prometheus"
@@ -18,6 +18,14 @@ pr_container_port                          : 9090
 pr_start_pause                             : 30
 pr_restart_policy                          : "always"
 pr_restart_sec                             : "100ms"
+
+ar_rules_name                              : "AllInstances"
+ar_rules_alert                             : "InstanceDown"
+ar_rules_exression                         : "(time() - container_last_seen) > 15"
+ar_rules_exression_delay                   : "10s"
+ar_rules_title                             : "Container {{ $labels.name }} down"
+ar_rules_description                       : "{{ $labels.name }} is down"
+ar_rules_severity                          : "critical"
 
 pr_directories                             :
   - "{{ pr_host_data_dir }}"

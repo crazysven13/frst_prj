@@ -1,0 +1,15 @@
+global:
+  resolve_timeout: {{ ar_config_resolve_timeout }}
+
+route:
+  group_by: ['alertname']
+  group_wait: {{ ar_config_route_group_wait }}
+  receiver: '{{ ar_config_reciever }}'
+
+receivers:
+- name: '{{ ar_config_recievers_name }}'
+  telegram_configs:
+  - bot_token: '{{ ar_config_tg_bot_token }}'
+    api_url: '{{ ar_config_tg_api_url }}'
+    chat_id: {{ ar_config_tg_chat_id }}
+    parse_mode: '{{ ar_config_tg_parse_mode }}'

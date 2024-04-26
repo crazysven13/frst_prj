@@ -31,3 +31,6 @@ scrape_configs:
     static_configs:
       - targets:
          - <localhost>:19200
+
+rule_files:
+  - alert.rules

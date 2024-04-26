@@ -1,0 +1,11 @@
+groups:
+- name: {{ ar_rules_name }}
+  rules:
+  - alert: {{ ar_rules_alert }}
+    expr: {{ ar_rules_exression }}
+    for: {{ ar_rules_exression_delay }}
+    annotations:
+      title: '{{ ar_rules_title }}'
+      description: '{{ ar_rules_description }}'
+    labels:
+      severity: '{{ ar_rules_severity }}'

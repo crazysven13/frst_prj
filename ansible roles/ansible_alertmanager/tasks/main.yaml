@@ -1,0 +1,13 @@
+- name: install alertmanager
+  include: install.yaml
+  become: true
+  when: not ar_flush_all|bool
+  tags: 
+  - ar_install
+
+- name: uninstall alertmanager
+  include: uninstall.yaml
+  become: true
+  when: ar_flush_all|bool
+  tags:
+  - ar_uninstall
