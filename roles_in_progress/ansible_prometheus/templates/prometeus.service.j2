@@ -22,7 +22,7 @@ ExecStart=/usr/bin/docker run \
   prom/{{ pr_container_name }} \
   --config.file={{ pr_container_config_dir }}/prometheus.yml \
   --storage.tsdb.path=/{{ pr_container_data_dir}} \
-  --storage.tsdb.retention.time=1d
+  --storage.tsdb.retention.time={{ pr_storage_retention_time }}
 ExecStop=/usr/bin/{{ pr_container_runtime }} stop {{ pr_service_name }}
  {% if es_container_runtime == "podman" +%}
 KillMode=none

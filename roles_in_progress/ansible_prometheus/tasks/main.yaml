@@ -1,0 +1,13 @@
+- name: install prometheus
+  include: install.yaml
+  become: true
+  when: not pr_flush_all|bool
+  tags: 
+  - pr_install
+
+- name: uninstall prometheus
+  include: uninstall.yaml
+  become: true
+  when: pr_flush_all|bool
+  tags:
+  - pr_uninstall

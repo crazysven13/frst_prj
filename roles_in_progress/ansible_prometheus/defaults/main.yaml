@@ -10,10 +10,12 @@ pr_host_port                               : 9090
 pr_container_runtime                       : "docker"
 pr_container_image                         : "prometheus"
 pr_container_name                          : "{{ pr_service_name }}"
+pr_container_port                          : 9090
 
 pr_container_config_dir                    : "/etc/{{ pr_service_name }}"
 pr_container_data_dir                      : "/{{ pr_service_name }}"
-pr_container_port                          : 9090
+
+pr_storage_retention_time                  : "1d"
 
 pr_start_pause                             : 30
 pr_restart_policy                          : "always"
@@ -26,6 +28,19 @@ ar_rules_exression_delay                   : "10s"
 ar_rules_title                             : "Container {{ $labels.name }} down"
 ar_rules_description                       : "{{ $labels.name }} is down"
 ar_rules_severity                          : "critical"
+
+pr_config_scrape_interval                  : "15s"
+pr_config_scrape_timeout                   : "10s"
+pr_config_evaluation_interval              : "30s"
+pr_config_rule_file                        : "alert.rules"
+
+
+pr_port_node_exporter                      : "9100"
+pr_port_mysql                              : "3306"
+pr_port_mysql_exporter                     : "9104"
+pr_port_cadvisor                           : "8080"
+pr_port_es_exporter                        : "19200"
+pr_port_alertmanager                       : "9093"
 
 pr_directories                             :
   - "{{ pr_host_data_dir }}"

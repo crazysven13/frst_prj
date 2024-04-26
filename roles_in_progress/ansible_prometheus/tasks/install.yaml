@@ -1,7 +1,28 @@
+- name: create prometheus user
+  user:
+    name: "{{ pr_host_user_name }}"
+    uid: "{{ pr_host_user_uid }}"
+    comment: "prometheus"
+
+- name: create directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ pr_host_user_name }}"
+    group: "{{ pr_host_user_name }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - "{{ pr_directories }}"
+
+
+
+
+
+
 - name: restart prometheus service
   become: true
   systemd:
-    name: "{{ msq_service_name }}"
+    name: "{{ pr_service_name }}"
     state: restarted
     enabled: yes
     daemon_reload: yes

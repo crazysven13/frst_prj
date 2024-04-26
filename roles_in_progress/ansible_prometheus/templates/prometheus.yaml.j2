@@ -1,0 +1,39 @@
+global:
+  scrape_interval: {{pr_config_scrape_interval}}
+  scrape_timeout: {{ pr_config_scrape_timeout }}
+  evaluation_interval: {{pr_config_evaluation_interval}}
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets:
+         - {{ ansible_hostname }}:{{ pr_host_port }}
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets:
+         - {{ ansible_hostname }}:{{ pr_port_node_exporter }}
+  - job_name: 'mysql'
+    static_configs:
+      - targets:
+         - {{ ansible_hostname }}:{{ pr_port_mysql }}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ ansible_hostname }}:{{ pr_port_mysql_exporter }}
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets:
+         - {{ ansible_hostname }}:{{ pr_port_cadvisor }}
+  - job_name: 'es_exporter'
+    static_configs:
+      - targets:
+         - {{ ansible_hostname }}:{{ pr_port_es_exporter }}
+alerting:
+  alertmanagers:
+  - static_configs:
+    - tergets: [{{ ansible_hostname }}:{{ pr_port_alertmanager }}]
+rule_files:
+  - {{ pr_config_rule_file }}
